@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button, Container, Divider, Icon, Table, Modal, Header } from 'semantic-ui-react';
 import MenuSistema from '../../MenuSistema';
 
@@ -110,14 +110,14 @@ export default function ListEntregador() {
                                         <Table.Cell>{entregador.foneFixo}</Table.Cell>
                                         <Table.Cell textAlign='center'>
 
-                                            <Button
-                                                inverted
-                                                circular
-                                                color='green'
-                                                title='Clique aqui para editar os dados deste entregador'
-                                                icon>
-                                                <Icon name='edit' />
-                                            </Button> &nbsp;
+                                        <Button
+                                        inverted
+                                        circular
+                                        color='green'
+                                        title='Clique aqui para editar os dados deste cliente'
+                                        icon>
+                                        <Link to="/form-entregador" state={{id: entregador.id}} style={{color: 'green'}}> <Icon name='edit' /> </Link>
+                                        </Button> &nbsp;
                                             <Button
                                                 inverted
                                                 circular
