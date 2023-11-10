@@ -14,6 +14,9 @@ export default function FormProduto (){
     const [dataNascimento, setDataNascimento] = useState();
     const [foneCelular, setFoneCelular] = useState();
     const [foneFixo, setFoneFixo] = useState();
+    const [listaCategoria, setListaCategoria] = useState([]);
+    const [idCategoria, setIdCategoria] = useState();
+ 
     
     
     useEffect(() => {
@@ -26,8 +29,15 @@ export default function FormProduto (){
                            setDataNascimento(formatarData(response.data.dataNascimento))
                            setFoneCelular(response.data.foneCelular)
                            setFoneFixo(response.data.foneFixo)
+                           setIdCategoria(response.data.categoria.id)
             })
         }
+        axios.get("http://localhost:8082/api/categoriaproduto")
+        .then((response) => {
+            const dropDownCategorias = response.data.map(c => ({ text: c.descricao, value: c.id }));
+            setListaCategoria(dropDownCategorias);
+        })
+ 
      }, [state])
 
      function formatarData(dataParam) {
@@ -43,6 +53,7 @@ export default function FormProduto (){
      function salvar() {
 
         let produtoRequest = {
+            idCategoria: idCategoria,
             codigo: titulo,
             cpf: cpf,
             dataNascimento: dataNascimento,
@@ -98,6 +109,21 @@ export default function FormProduto (){
     /> 
 </Form.Input>
 </Form.Group>
+
+<Form.Select
+	required
+	fluid
+	tabIndex='3'
+	placeholder='Selecione'
+	label='Categoria'
+	options={listaCategoria}
+	value={idCategoria}
+	onChange={(e,{value}) => {
+		setIdCategoria(value)
+	}}
+/>
+
+               
 <Form.Field
           control={TextArea}
           label='Descrição'
