@@ -10,10 +10,11 @@ export default function FormProduto (){
     const [idProduto, setIdProduto] = useState();
 
     const [titulo, setTitulo] = useState();
-    const [cpf, setCpf] = useState();
-    const [dataNascimento, setDataNascimento] = useState();
-    const [foneCelular, setFoneCelular] = useState();
-    const [foneFixo, setFoneFixo] = useState();
+    const [codigo, setCodigo] = useState();
+    const [descricao, setDescricao] = useState();
+    const [valorUnitario, setValorUnitario] = useState();
+    const [tempoEntregaMin, setTempoEntregaMin] = useState();
+    const [tempoEntregaMax, setTempoEntregaMax] = useState();
     const [listaCategoria, setListaCategoria] = useState([]);
     const [idCategoria, setIdCategoria] = useState();
  
@@ -25,10 +26,10 @@ export default function FormProduto (){
                         .then((response) => {
                            setIdProduto(response.data.id)
                            setTitulo(response.data.titulo)
-                           setCpf(response.data.cpf)
-                           setDataNascimento(formatarData(response.data.dataNascimento))
-                           setFoneCelular(response.data.foneCelular)
-                           setFoneFixo(response.data.foneFixo)
+                           setDescricao(response.data.descricao)
+                           setValorUnitario(response.data.valorUnitario)
+                           setTempoEntregaMin(response.data.tempoEntregaMin)
+                           setTempoEntregaMax(response.data.tempoEntregaMax)
                            setIdCategoria(response.data.categoria.id)
             })
         }
@@ -54,12 +55,16 @@ export default function FormProduto (){
 
         let produtoRequest = {
             idCategoria: idCategoria,
-            codigo: titulo,
-            cpf: cpf,
-            dataNascimento: dataNascimento,
-            foneCelular: foneCelular,
-            foneFixo: foneFixo
+            titulo: titulo,
+            codigo:  parseInt(codigo),
+            descricao: descricao,
+            valorUnitario: parseFloat(valorUnitario),
+            tempoEntregaMin: parseInt(tempoEntregaMin),
+            tempoEntregaMax:parseInt(tempoEntregaMax)
+        
         }
+
+        console.log(produtoRequest)
  
         if (idProduto != null) { //Alteração:
             axios.put("http://localhost:8082/api/produto/" + idProduto, produtoRequest)
@@ -95,6 +100,8 @@ export default function FormProduto (){
     required
     fluid
     label='titulo'
+    value= {titulo}
+    onChange={e => setTitulo(e.target.value)}
     maxLength="400"
 />
 
@@ -105,7 +112,9 @@ export default function FormProduto (){
     >
     <InputMask
         required
-        mask="999999999-99"
+        mask="999999"
+        value={codigo}
+        onChange={e => setCodigo(e.target.value)}
     /> 
 </Form.Input>
 </Form.Group>
@@ -128,12 +137,16 @@ export default function FormProduto (){
           control={TextArea}
           label='Descrição'
           placeholder='Informe a descrição do produto'
+          value={descricao}
+          onChange={e => setDescricao(e.target.value)}
         />
         <Form.Group>
         <Form.Input
                                     required
                                     fluid
                                     label='Valor '
+                                    value={valorUnitario}
+                                    onChange={e => setValorUnitario(e.target.value)}
                                     width={6}>                                   
                                 </Form.Input>
 
@@ -141,6 +154,8 @@ export default function FormProduto (){
                                     fluid
                                     label='Tempo de entrega minimo em minutos'
                                     width={6}
+                                    value={tempoEntregaMin}
+                                    onChange={e => setTempoEntregaMin(e.target.value)}
                                     placeholder= '30'>
 
                                 </Form.Input>
@@ -149,6 +164,8 @@ export default function FormProduto (){
                                     fluid
                                     label='Tempo de entrega maximo em minutos'
                                     width={6}
+                                    value={tempoEntregaMax}
+                                    onChange={e => setTempoEntregaMax(e.target.value)}
                                     placeholder= '40'>
                                </Form.Input>
         </Form.Group>
@@ -174,6 +191,7 @@ export default function FormProduto (){
                                 labelPosition='left'
                                 color='blue'
                                 floated='right'
+                                onClick={() => salvar()}
                             >
                                 <Icon name='save' />
                                 Salvar

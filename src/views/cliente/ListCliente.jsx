@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Container, Divider, Icon, Table, Modal, Header } from 'semantic-ui-react';
+import { Button, Container, Divider, Icon, Table, Modal, Header, Menu, Form, Segment } from 'semantic-ui-react';
 import MenuSistema from '../../MenuSistema';
 
 export default function ListCliente () {
@@ -9,6 +9,10 @@ export default function ListCliente () {
    const [lista, setLista] = useState([]);
    const [openModal, setOpenModal] = useState(false);
    const [idRemover, setIdRemover] = useState();
+   const [menuFiltro, setMenuFiltro] = useState();
+   const [nome, setNome] = useState();
+   const [cpf, setCpf] = useState();
+
 
 
    useEffect(() => {
@@ -43,6 +47,46 @@ async function remover() {
     })
     setOpenModal(false)
 }
+function handleMenuFiltro() {
+
+    if (menuFiltro === true) {
+        setMenuFiltro(false);
+    } else {
+        setMenuFiltro(true);
+    }
+}
+
+function handleChangeNome(value) {
+
+    filtrarClientes(value, cpf);
+}
+
+function handleChangeCpf(value) {
+
+    filtrarClientes(nome, value);
+}
+
+async function filtrarClientes(nomeParam, cpfParam) {
+
+    let formData = new FormData();
+
+    if (nomeParam !== undefined) {
+        setNome(nomeParam)
+        formData.append('nome', nomeParam);
+    }
+    if (cpfParam !== undefined) {
+        setCpf(cpfParam)
+        formData.append('cpf', cpfParam);
+    }
+
+
+    await axios.post("http://localhost:8082/api/cliente/filtrar", formData)
+    .then((response) => {
+        setLista(response.data)
+    })
+}
+
+
 
 
    function formatarData(dataParam) {
@@ -51,8 +95,8 @@ async function remover() {
         return ''
     }
 
-    let arrayData = dataParam.split('-');
-    return arrayData[2] + '/' + arrayData[1] + '/' + arrayData[0];
+    //let arrayData = dataParam.split('-');
+    return dataParam[2] + '/' + dataParam[1] + '/' + dataParam[0];
 }
 return(
     <div>
@@ -65,6 +109,18 @@ return(
                 <Divider />
 
                 <div style={{marginTop: '4%'}}>
+
+                <Menu compact>
+                               <Menu.Item
+                                   name='menuFiltro'
+                                   active={menuFiltro === true}
+                                   onClick={() => handleMenuFiltro()}
+                               >
+                                   <Icon name='filter' />
+                                   Filtrar
+                               </Menu.Item>
+                           </Menu>
+
                     <Button
                         label='Novo'
                         circular
@@ -74,6 +130,35 @@ return(
                         as={Link}
                         to='/form-cliente'
                     />
+
+                        { menuFiltro ?
+                            
+                            <Segment>
+                                <Form className="form-filtros">
+                                    
+                                      <Form.Group widths='equal'>                   
+                <Form.Input
+                    icon="search"
+                    value={nome}
+                    onChange={e => handleChangeNome(e.target.value)}
+                    label='Nome'
+                    placeholder='Filtrar por Nome'
+                    labelPosition='left'
+                />
+                 <Form.Input
+                    icon="search"
+                    value={cpf}
+                    onChange={e => handleChangeCpf(e.target.value)}
+                    label='cpf'
+                    placeholder='Filtrar por cpf'
+                    labelPosition='left'
+                />                
+            </Form.Group>
+        </Form>
+    </Segment>:""
+}
+
+                        
  <br/><br/><br/>
                   
                   <Table color='orange' sortable celled>
