@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import InputMask from 'react-input-mask';
 import { Button, Container, Divider, Form, GridColumn, Icon } from 'semantic-ui-react';
 import MenuSistema from '../../MenuSistema';
+import {mensagemErro, notifyError, notifySuccess } from '../../views/util/Util';
 
 export default function FormEntregador() {
 
@@ -45,8 +46,12 @@ function salvar() {
         .catch((error) => { console.log('Erro ao alter um cliente.') })
     } else { //Cadastro:
         axios.post("http://localhost:8082/api/entregador", entregadorRequest)
-        .then((response) => { console.log('Cliente cadastrado com sucesso.') })
-        .catch((error) => { console.log('Erro ao incluir o cliente.') })
+        .then((response) => { notifySuccess('Cliente cadastrado com sucesso.') })
+        .catch((error) => {  if (error.response) {
+            notifyError(error.response.data.errors[0].defaultMessage)
+            } else {
+            notifyError(mensagemErro)
+            }  })
     }
 }
 

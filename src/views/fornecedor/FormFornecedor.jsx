@@ -4,8 +4,11 @@ import InputMask from 'react-input-mask';
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
 import MenuSistema from '../../MenuSistema';
 import { Link, useLocation } from "react-router-dom";
+import {mensagemErro, notifyError, notifySuccess } from '../../views/util/Util';
 
 export default function FormFornecedor (){
+    const { state } = useLocation();
+    const [idFornecedor, setIdFornecedor] = useState();
 
     const [nome, setNome] = useState();
  const [endereco, setEndereco] = useState();
@@ -23,13 +26,20 @@ export default function FormFornecedor (){
      paginaWeb: paginaWeb,
      contatoVendedor: contatoVendedor
     }
-    axios.post("http://localhost:8082/api/fornecedor", fornecedorRequest)
-    .then((response) => {
-     console.log('Fornecedor cadastrado com sucesso.')
-    })
-    .catch((error) => {
-     console.log('Erro ao incluir o um fornecedor.')
-    })
+    if (idFornecedor != null) { //Alteração:
+        axios.put("http://localhost:8082/api/cliente/" + idFornecedor, fornecedorRequest)
+        .then((response) => { console.log('Cliente alterado com sucesso.') })
+        .catch((error) => { console.log('Erro ao alter um cliente.') })
+    } else { //Cadastro:
+        axios.post("http://localhost:8082/api/cliente", fornecedorRequest)
+        .then((response) => { notifySuccess('Cliente cadastrado com sucesso.') })
+        .catch((error) => { if (error.response) {
+            notifyError(error.response.data.errors[0].defaultMessage)
+            } else {
+            notifyError(mensagemErro)
+            } 
+             })
+    }
     }
     
     return (
