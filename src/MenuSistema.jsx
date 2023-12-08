@@ -8,6 +8,8 @@ class MenuSistema extends React.Component{
        activeItem: 'home'
    }
 
+   
+
    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
    render(){
@@ -15,13 +17,24 @@ class MenuSistema extends React.Component{
            <>
                <Menu inverted>
                   
-                   <Menu.Item
-                       name='home'
-                       active={this.state.activeItem === 'home'}
-                       onClick={this.handleItemClick}
-                       as={Link}
-                       to='/'
-                   />
+               <Menu.Item
+                    name='home'
+                    active={this.state.activeItem === 'home'}
+                    onClick={this.handleItemClick}
+                    as={Link}
+                    to='/home'
+                />
+
+                <Menu.Item
+                    className='navbar__item--mobile'
+                    onClick={this.logout}
+                    content='Sair'
+                    as={Link}
+                    to='/'
+                />
+                </Menu>
+
+
 
 <Menu.Item
                        name='cliente'
@@ -54,8 +67,6 @@ class MenuSistema extends React.Component{
                        as={Link}
                        to='/list-fornecedor'
                    />
-
-               </Menu>
            </>
        )
    }
